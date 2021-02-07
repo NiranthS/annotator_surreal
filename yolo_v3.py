@@ -391,6 +391,8 @@ def draw_boxes(image, boxes, labels, obj_thresh):
             cv2.circle(image, (centerx,centery), 2, (0,255,0), 2)
         
     return image, vls
+
+person_count = 0
 def _main_(args):
     weights_path = args.weights
     image_path   = args.image
@@ -457,21 +459,26 @@ def _main_(args):
 
         print(vls)
 
-        print(i)
-        if vls['person'] == None:
+        print(i, 'i')
+        print(person_count, 'person_count')
+        if 'person' in vls.keys():
+        # if vls['person'] == None:
+        #     continue
+            anno[i]['objpos'] = [float(vls['person'][0]), float(vls['person'][1])]
+            anno[i]['scale_provided'] = vls['person'][2]
+            # write the image with bounding boxes to file
+            # cv2.imshow('img', (image).astype('uint8'))
+            # cv2.waitKey(0)
+            person_count += 1
+            if i % 1000 == 0:
+                if anno_pth2[-4:] == 'json':
+                    with open(anno_pth2, 'w') as f:
+                        json.dump(anno, f)
+                else:
+                    with open(anno_pth2, 'wb') as f:
+                        pickle.dump(anno, f)
+        else:
             continue
-        anno[i]['objpos'] = [float(vls['person'][0]), float(vls['person'][1])]
-        anno[i]['scale_provided'] = vls['person'][2]
-        # write the image with bounding boxes to file
-        # cv2.imshow('img', (image).astype('uint8'))
-        # cv2.waitKey(0)
-        if i % 1000 == 0:
-            if anno_pth2[-4:] == 'json':
-                with open(anno_pth2, 'w') as f:
-                    json.dump(anno, f)
-            else:
-                with open(anno_pth2, 'wb') as f:
-                    pickle.dump(anno, f)
     
     if anno_pth2[-4:] == 'json':
         with open(anno_pth2, 'w') as f:
