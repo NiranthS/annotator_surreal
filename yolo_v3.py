@@ -392,7 +392,7 @@ def draw_boxes(image, boxes, labels, obj_thresh):
         
     return image, vls
 
-person_count = 0
+
 def _main_(args):
     weights_path = args.weights
     image_path   = args.image
@@ -430,7 +430,7 @@ def _main_(args):
         with open(anno_pth, 'rb') as f:
             anno = pickle.load(f)
 
-
+    person_count = 0
     for i in range(len(anno)):
         # pdb.set_trace()
         if anno[i]['img_paths'][:7] != 'surreal':
